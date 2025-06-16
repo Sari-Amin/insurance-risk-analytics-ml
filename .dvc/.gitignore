@@ -1,0 +1,4 @@
+/config.local
+/tmp
+/cache
+!data/raw/MachineLearningRating_v3.txt.dvc

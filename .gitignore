@@ -19,3 +19,4 @@ Thumbs.db
 #Ignore Data
 *.csv
 /data
+!data/raw/MachineLearningRating_v3.txt.dvc
