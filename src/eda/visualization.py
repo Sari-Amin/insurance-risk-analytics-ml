@@ -1,13 +1,15 @@
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
 import seaborn as sns
 
 class Visualizer:
     def __init__(self, df):
-        self.df = df
+        self.df = df.copy()
 
     def plot_histogram(self, column, bins=50):
         plt.figure(figsize=(8, 4))
-        sns.histplot(self.df[column].dropna(), bins=bins, kde=True)
+        sns.histplot(data= self.df, x = column, bins=bins, kde=True)
         plt.title(f"Distribution of {column}")
         plt.xlabel(column)
         plt.ylabel("Frequency")
@@ -15,7 +17,7 @@ class Visualizer:
 
     def plot_boxplot(self, column):
         plt.figure(figsize=(8, 4))
-        sns.boxplot(y=self.df[column].dropna())
+        sns.boxplot(data= self.df, y=self.df[column].dropna())
         plt.title(f"Boxplot of {column}")
         plt.xlabel(column)
         plt.show()
@@ -37,4 +39,29 @@ class Visualizer:
         plt.ylabel("Loss Ratio")
         plt.xlabel(group_col)
         plt.tight_layout()
+        plt.show()
+
+
+    def plot_log_histogram(self, column, clip_upper=0.99):
+        data = self.df[column].dropna()
+        data = data[data > 0]  # log can't handle zero or negative
+        clipped = np.clip(data, a_min=None, a_max=data.quantile(clip_upper))
+        log_values = np.log1p(clipped)  # log(x + 1)
+
+        plt.figure(figsize=(8, 4))
+        sns.histplot(log_values, bins=50, kde=True)
+        plt.title(f"Log-Transformed Histogram of {column}")
+        plt.xlabel(f"log({column} + 1)")
+        plt.show()
+
+    def plot_log_boxplot(self, column, clip_upper=0.99):
+        data = self.df[column].dropna()
+        data = data[data > 0]
+        clipped = np.clip(data, a_min=None, a_max=data.quantile(clip_upper))
+        log_values = np.log1p(clipped)
+
+        plt.figure(figsize=(8, 4))
+        sns.boxplot(x=log_values)
+        plt.title(f"Log-Transformed Boxplot of {column}")
+        plt.xlabel(f"log({column} + 1)")
         plt.show()
