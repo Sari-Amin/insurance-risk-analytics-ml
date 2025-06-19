@@ -32,10 +32,12 @@ class DataCleaner:
             self.df['CrossBorder'] = self.df['CrossBorder'].fillna('No')
 
     def handle_numeric_outliers(self, column, lower=0):
-        """Clip numeric values to remove extreme outliers."""
+        
         if column in self.df.columns:
-            upper = self.df[column].quantile(0.99)
-            self.df[column] = self.df[column].clip(lower=lower, upper=upper)
+            upper = self.df[column][self.df[column] > 0].quantile(0.99)
+            # Only clip values > 0
+            mask = self.df[column] > 0
+            self.df.loc[mask, column] = self.df.loc[mask, column].clip(lower=lower, upper=upper)
 
     def run_all(self):
         """Run all cleaning steps in order."""
