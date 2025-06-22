@@ -2,6 +2,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import root_mean_squared_error, r2_score
+from xgboost import XGBRegressor
 
 class ClaimSeverityTreeModel:
     def __init__(self, df):
@@ -23,7 +24,14 @@ class ClaimSeverityTreeModel:
     def train(self):
         X_train, X_test, y_train, y_test = self.prepare_data()
 
-        self.model = RandomForestRegressor(n_estimators=100, random_state=42)
+        self.model = XGBRegressor(
+            n_estimators=100,
+            max_depth=4,
+            learning_rate=0.1,
+            objective='reg:squarederror',
+            random_state=42
+        )
+
         self.model.fit(X_train, y_train)
         y_pred = self.model.predict(X_test)
 

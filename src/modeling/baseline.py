@@ -1,7 +1,7 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error, r2_score
+from sklearn.metrics import root_mean_squared_error, r2_score
 
 class ClaimSeverityModel:
     def __init__(self, df):
@@ -9,7 +9,7 @@ class ClaimSeverityModel:
         self.model = None
 
     def prepare_features(self):
-        # Select input features and target
+
         self.df = self.df.dropna(subset=['TotalClaims'])  # safety
         features = [
             'Gender', 'Province', 'VehicleType', 'Make', 'Cubiccapacity',
@@ -29,7 +29,7 @@ class ClaimSeverityModel:
         self.model.fit(X_train, y_train)
         y_pred = self.model.predict(X_test)
 
-        rmse = mean_squared_error(y_test, y_pred, squared=False)
+        rmse = root_mean_squared_error(y_test, y_pred)
         r2 = r2_score(y_test, y_pred)
 
         return {"rmse": rmse, "r2": r2, "model": self.model}
